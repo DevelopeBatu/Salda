@@ -4,6 +4,9 @@
 typedef enum {
     TOKEN_INT,
     TOKEN_PLUS,
+    TOKEN_LET,
+    TOKEN_EQ,
+    TOKEN_IDENTIFIER,
     TOKEN_UNKNOWN,
     TOKEN_EOF
 } TokenType;
@@ -13,4 +16,4 @@ typedef struct {
     char *value;
 } Token;
 
-#endif // TOKEN_H
+#endif 

@@ -53,6 +53,15 @@ void print_list(const List *list) {
             case TOKEN_PLUS:
                 printf("PLUS, ");
                 break;
+            case TOKEN_EQ:
+                printf("EQ, ");
+                break;
+            case TOKEN_LET:
+                printf("LET, ");
+                break;
+            case TOKEN_IDENTIFIER:
+                printf("IDENTIFIER, ");
+                break;
             case TOKEN_UNKNOWN:
                 printf("UNKNOWN, ");
                 break;
@@ -60,6 +69,7 @@ void print_list(const List *list) {
                 printf("EOF, ");
                 break;
             default:
+                printf("UNKNOWN, ");
                 break;
         }
         printf("value: '%s' }", token->value);

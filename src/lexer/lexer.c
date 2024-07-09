@@ -35,6 +35,8 @@ void tokenize_file(const char *filename, List *token_list) {
             continue;
         } else if (ch == '+') {
             add_token(token_list, TOKEN_PLUS, &ch, 1);
+        } else if (ch == '=') {
+            add_token(token_list, TOKEN_EQ, &ch, 1);
         } else if (isdigit(ch)) {
             char buffer[64];
             size_t length = 0;
@@ -45,6 +47,20 @@ void tokenize_file(const char *filename, List *token_list) {
             buffer[length] = '\0';
             ungetc(ch, file);
             add_token(token_list, TOKEN_INT, buffer, length);
+        } else if (isalpha(ch)) {
+            char buffer[64];
+            size_t length = 0;
+            do {
+                buffer[length++] = ch;
+                ch = fgetc(file);
+            } while (isalpha(ch));
+            buffer[length] = '\0';
+            ungetc(ch, file);
+            if (strcmp(buffer, "let") == 0) {
+                add_token(token_list, TOKEN_LET, buffer, length);
+            } else {
+                add_token(token_list, TOKEN_IDENTIFIER, buffer, length);
+            }
         } else {
             add_token(token_list, TOKEN_UNKNOWN, &ch, 1);
         }
