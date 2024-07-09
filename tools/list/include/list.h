@@ -2,21 +2,17 @@
 #define LIST_H
 
 #include <stddef.h>
-#include "token/token.h"
 
 typedef struct {
-    Token *data;
+    void **items;
     size_t size;
     size_t capacity;
 } List;
 
-
 void init_list(List *list);
+void append_to_list(List *list, void *item, size_t item_size);
+void* get_from_list(List *list, size_t index);
 void free_list(List *list);
-void list_append(List *list, Token value);
-Token list_get(List *list, size_t index);
-void list_set(List *list, size_t index, Token value);
-size_t list_size(List *list);
-void list_print(List *list);
+void print_list(const List *list);
 
-#endif
+#endif // LIST_H

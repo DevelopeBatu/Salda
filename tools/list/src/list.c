@@ -1,65 +1,68 @@
-#include "list.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "list.h"
+#include "token.h"
 
-#define INITIAL_CAPACITY 10
-
-// Initialize the list
 void init_list(List *list) {
-    list->data = (Token *)malloc(INITIAL_CAPACITY * sizeof(Token));
     list->size = 0;
-    list->capacity = INITIAL_CAPACITY;
+    list->capacity = 10;
+    list->items = malloc(sizeof(void*) * list->capacity);
 }
 
-// Free the list
-void free_list(List *list) {
-    for (size_t i = 0; i < list->size; ++i) {
-        free(list->data[i].type);
-        free(list->data[i].value);
-    }
-    free(list->data);
-    list->data = NULL;
-    list->size = 0;
-    list->capacity = 0;
-}
-
-// Append an item to the list
-void list_append(List *list, Token value) {
+void append_to_list(List *list, void *item, size_t item_size) {
     if (list->size >= list->capacity) {
         list->capacity *= 2;
-        list->data = (Token *)realloc(list->data, list->capacity * sizeof(Token));
+        list->items = realloc(list->items, sizeof(void*) * list->capacity);
     }
-    list->data[list->size++] = value;
+    void *new_item = malloc(item_size);
+    memcpy(new_item, item, item_size);
+    list->items[list->size++] = new_item;
 }
 
-// Get an item from the list
-Token list_get(List *list, size_t index) {
-    if (index >= list->size) {
-        fprintf(stderr, "Index out of bounds\n");
-        exit(EXIT_FAILURE);
+void* get_from_list(List *list, size_t index) {
+    if (index < list->size) {
+        return list->items[index];
     }
-    return list->data[index];
+    return NULL;
 }
 
-// Set an item in the list
-void list_set(List *list, size_t index, Token value) {
-    if (index >= list->size) {
-        fprintf(stderr, "Index out of bounds\n");
-        exit(EXIT_FAILURE);
+void free_list(List *list) {
+    for (size_t i = 0; i < list->size; i++) {
+        Token *token = (Token*)list->items[i];
+        if (token->value) {
+            free(token->value);
+        }
+        free(list->items[i]);
     }
-    list->data[index] = value;
+    free(list->items);
 }
 
-// Get the size of the list
-size_t list_size(List *list) {
-    return list->size;
-}
-
-// Print the list
-void list_print(List *list) {
-    for (size_t i = 0; i < list->size; ++i) {
-        print_token(&list->data[i]);
-        printf("\n");
+void print_list(const List *list) {
+    printf("[");
+    for (size_t i = 0; i < list->size; i++) {
+        Token *token = (Token*)list->items[i];
+        if (i > 0) {
+            printf(", ");
+        }
+        printf("{ type: ");
+        switch (token->type) {
+            case TOKEN_INT:
+                printf("INT, ");
+                break;
+            case TOKEN_PLUS:
+                printf("PLUS, ");
+                break;
+            case TOKEN_UNKNOWN:
+                printf("UNKNOWN, ");
+                break;
+            case TOKEN_EOF:
+                printf("EOF, ");
+                break;
+            default:
+                break;
+        }
+        printf("value: '%s' }", token->value);
     }
+    printf("]\n");
 }

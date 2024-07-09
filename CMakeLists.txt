@@ -17,3 +17,4 @@ add_executable(Salda ${SRC_FILES})
 target_link_libraries(Salda argparse SaldaString list)
 
 target_include_directories(Salda PUBLIC tools/argparse/include tools/SaldaString/include tools/list/include)
+
