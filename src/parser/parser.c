@@ -7,7 +7,7 @@
 #include "token.h"
 #include "eval.h"
 
-char* c_file = NULL;
+char* c_file = NULL; // Global c_file değişkeni
 
 void nextToken(List *tokens, Token **cur, size_t *index) {
     if (*index + 1 < tokens->size) {
@@ -53,16 +53,17 @@ void parse(List tokens) {
             
             switch (type) {
                 case TYPE_INT: {
-                    size_t new_len = (c_file ? strlen(c_file) : 0) + strlen("int ") + strlen(name) + strlen(" = ") + strlen(data) + strlen(";\n") + 1;
-
-
+                    if (!c_file) {
+                        c_file = (char *)malloc(1); // Başlangıç için bellek ayır
+                        c_file[0] = '\0';
+                    }
+                    size_t new_len = strlen(c_file) + strlen("int ") + strlen(name) + strlen(" = ") + strlen(data) + strlen(";\n") + 1;
                     c_file = (char *)realloc(c_file, new_len);
-
-                    char temp[10000];
-                    snprintf(temp, sizeof(temp), "int %s = %s;\n", name, data);
-
-                    strcat(c_file, temp);
-
+                    strcat(c_file, "int ");
+                    strcat(c_file, name);
+                    strcat(c_file, " = ");
+                    strcat(c_file, data);
+                    strcat(c_file, ";\n");
                     break;
                 }
                 default:
