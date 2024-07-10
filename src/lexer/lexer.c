@@ -37,7 +37,10 @@ void tokenize_file(const char *filename, List *token_list) {
             add_token(token_list, TOKEN_PLUS, &ch, 1);
         } else if (ch == '=') {
             add_token(token_list, TOKEN_EQ, &ch, 1);
-        } else if (isdigit(ch)) {
+        } else if (ch == ';') {
+            add_token(token_list, TOKEN_SEMI, &ch, 1);
+        }
+        else if (isdigit(ch)) {
             char buffer[64];
             size_t length = 0;
             do {

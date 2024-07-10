@@ -6,6 +6,7 @@ typedef enum {
     TOKEN_PLUS,
     TOKEN_LET,
     TOKEN_EQ,
+    TOKEN_SEMI,
     TOKEN_IDENTIFIER,
     TOKEN_UNKNOWN,
     TOKEN_EOF

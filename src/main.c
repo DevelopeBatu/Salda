@@ -3,6 +3,7 @@
 #include "arg.h"
 #include "lexer.h"
 #include "list.h"
+#include "parser.h"
 
 int main(int argc, char **argv) {
     char *input_file = NULL;
@@ -23,7 +24,7 @@ int main(int argc, char **argv) {
 
     tokenize_file(input_file, &token_list);
 
-    print_list(&token_list);
+    parse(token_list);
 
     free_list(&token_list);
 
