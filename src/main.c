@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
 
     if (!output_file) {
         size_t input_len = strlen(input_file);
-        output_file = (char *)malloc(input_len + 3); // +3 for ".c" and null terminator
+        output_file = (char *)malloc(input_len + 3); 
         strcpy(output_file, input_file);
         strcat(output_file, ".c");
     }
@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
     printf("Output written to %s\n", output_file);
 
     free(output_file);
-    free(c_file); // Belleği serbest bırakın
+    free(c_file);
 
     free_list(&token_list);
 
