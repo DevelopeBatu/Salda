@@ -2,3 +2,7 @@ build/
 
 
 test/test
+
+main.sl.c
+
+examples/

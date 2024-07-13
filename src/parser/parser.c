@@ -5,9 +5,9 @@
 #include "lexer.h"
 #include "list.h"
 #include "token.h"
-#include "eval.h"
 
-char* c_file = NULL; // Global c_file değişkeni
+
+char* c_file = NULL;  
 
 void nextToken(List *tokens, Token **cur, size_t *index) {
     if (*index + 1 < tokens->size) {
@@ -18,7 +18,19 @@ void nextToken(List *tokens, Token **cur, size_t *index) {
     }
 }
 
+void add_c_file(char *code) {
+    if (!c_file) {
+        c_file = (char *)malloc(1);
+        c_file[0] = '\0';
+    }
+    size_t new_len = strlen(c_file) + strlen(code) + 1;
+    c_file = (char *)realloc(c_file, new_len);
+    strcat(c_file, code);
+    strcat(c_file, "\n");
+}
+
 void parse(List tokens) {
+    add_c_file("int main(){");
     for (size_t i = 0; i < tokens.size; i++) {
         Token *cur = (Token *)get_from_list(&tokens, i);
         if (cur->type == TOKEN_LET) {
@@ -48,31 +60,14 @@ void parse(List tokens) {
                 nextToken(&tokens, &cur, &i);
             }
 
-            double result;
-            EvalType type = eval(data, &result);
-            
-            switch (type) {
-                case TYPE_INT: {
-                    if (!c_file) {
-                        c_file = (char *)malloc(1); // Başlangıç için bellek ayır
-                        c_file[0] = '\0';
-                    }
-                    size_t new_len = strlen(c_file) + strlen("int ") + strlen(name) + strlen(" = ") + strlen(data) + strlen(";\n") + 1;
-                    c_file = (char *)realloc(c_file, new_len);
-                    strcat(c_file, "int ");
-                    strcat(c_file, name);
-                    strcat(c_file, " = ");
-                    strcat(c_file, data);
-                    strcat(c_file, ";\n");
-                    break;
-                }
-                default:
-                    printf("The expression type is unknown or invalid.\n");
-                    break;
-            }
+            char *code = (char *)malloc(strlen(name) + strlen(" = ") + strlen(data) + strlen(";") + 1);
+            sprintf(code, "%s = %s;", name, data);
+            add_c_file(code);
 
             free(name);
             free(data);
+            free(code);
         }
     }
+    add_c_file("}");
 }

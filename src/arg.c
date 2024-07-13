@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "arg.h"
-#include "SaldaString.h"
 #include "argparse.h"
+#include "SaldaString.h"
+#include "arg.h"
 
 void usage(const char *program) {
     printf("Usage: %s [OPTIONS] [SUBCOMMANDS] <ARGS>\n", program);

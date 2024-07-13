@@ -1,12 +1,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "arg.h"
+#include "argparse.h"
 #include "lexer.h"
 #include "list.h"
 #include "parser.h"
+#include "arg.h"
 
-extern char* c_file; // parser.c dosyasında tanımlandığını belirtmek için extern kullanın
+// Declare the c_file as an external variable
+extern char* c_file;
+
+void write_to_output_file(const char *output_file) {
+    FILE *file = fopen(output_file, "w");
+    if (!file) {
+        perror("Could not open output file");
+        exit(EXIT_FAILURE);
+    }
+    fprintf(file, "%s", c_file);
+    fclose(file);
+    free(c_file);
+}
 
 int main(int argc, char **argv) {
     char *input_file = NULL;
@@ -21,7 +34,14 @@ int main(int argc, char **argv) {
         return 0;
     }
 
+    if (!output_file) {
+        output_file = (char *)malloc(strlen(input_file) + 3);  // .c + null terminator
+        strcpy(output_file, input_file);
+        strcat(output_file, ".c");
+    }
+
     printf("Input file: %s\n", input_file);
+    printf("Output file: %s\n", output_file);
 
     List token_list;
     init_list(&token_list);
@@ -30,26 +50,9 @@ int main(int argc, char **argv) {
 
     parse(token_list);
 
-    if (!output_file) {
-        size_t input_len = strlen(input_file);
-        output_file = (char *)malloc(input_len + 3); 
-        strcpy(output_file, input_file);
-        strcat(output_file, ".c");
-    }
-
-    FILE *file = fopen(output_file, "w");
-    if (!file) {
-        perror("Could not open output file");
-        return 1;
-    }
-    fprintf(file, "%s", c_file);
-    fclose(file);
-
-    printf("Output written to %s\n", output_file);
+    write_to_output_file(output_file);
 
     free(output_file);
-    free(c_file);
-
     free_list(&token_list);
 
     return 0;
